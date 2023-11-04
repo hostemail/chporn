@@ -1,0 +1,42 @@
+name: uodate
+
+on:
+  # push:
+  #   branches:
+  #     - main  # 替换为你的默认分支
+  schedule:
+    - cron:  '0 0 * * 0'  # 每周日午夜触发
+  workflow_dispatch:  # 触发手动事件
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 迁出代码
+      uses: actions/checkout@v2
+    - name: 安装Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: 加载缓存
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/run_in_Actions/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: 设置时区
+      run: sudo timedatectl set-timezone 'Asia/Shanghai'
+    - name: 安装依赖
+      run: |
+        pip install -r requirements.txt
+    - name: 执行任务
+      run: |
+        python go.py
+    - name: 提交更改
+      run: |
+         git config core.ignorecase false
+         git config --local user.email "actions@github.com"
+         git config --local user.name "GitHub Action"
+         git add .
+         git commit -m "$(date '+%Y-%m-%d %H:%M:%S')update"
+         git push
