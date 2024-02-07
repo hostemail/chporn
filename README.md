@@ -11,4 +11,4 @@
 https://github.com/v2ray/domain-list-community/blob/master/data/category-porn
 
 中文网址集：
-https://github.com/vveg26/chporn/blob/main/chadult.txt
+https://github.com/mianayang/chporn/blob/main/chadult.txt
